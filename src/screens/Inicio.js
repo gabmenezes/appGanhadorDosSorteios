@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, ScrollView, Alert, Modal } from "react-native";
 import {
   Text,
   Input,
@@ -20,7 +16,8 @@ import StyledInput from "../components/StyledInput";
 import botService from "../services/botService";
 import userServices from "../services/userServices";
 import { ActivityIndicator } from "react-native-paper";
-import * as moment from 'moment';
+import * as moment from "moment";
+import { WebView } from "react-native-webview";
 
 export default function Inicio() {
   const [linkSorteio, setLinkSorteio] = useState(null);
@@ -45,21 +42,57 @@ export default function Inicio() {
   const [isLoadingPerfis, setLoadingPerfis] = useState(false);
   const [mensagemAlert, setMensagemAlert] = useState(false);
 
-  const [quantidadeComentarios, setQuantidadeComentarios] =useState(null);
+  const [quantidadeComentarios, setQuantidadeComentarios] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [botScript, setBotScript] = useState("");
+
+  //   let botScript = `
+  //     // alert("injetou 3");
+  // function sleep(ms) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
+  // async function comentar() {
+  //   var i = 0;
+  //   while (true) {
+  //     // alert("dentro do while");
+  //     var comment_text = document.getElementsByClassName("Ypffh")[0];
+  //     if (comment_text) {
+  //       var comment_text = document.getElementsByClassName("Ypffh")[0];
+  //       comment_text.click();
+  //       comment_text.focus();
+  //       var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+  //         window.HTMLTextAreaElement.prototype,
+  //         "value"
+  //       ).set;
+  //       nativeInputValueSetter.call(comment_text, "teste"+i);
+
+  //       var ev2 = new Event("input", { bubbles: true });
+  //       comment_text.dispatchEvent(ev2);
+  //       var submit_button = document.getElementsByClassName("y3zKF")[0];
+  //       submit_button.click();
+  //       await sleep(30000);
+  //       i = i+1
+  //     }
+  //     await sleep(30000);
+  //   }
+  // }
+  // comentar();`
 
   useEffect(() => {
     console.log("============TEDSSS");
-    botService.verificarBot().then((response) => {
-      console.log("===========RESPONSESTATUS");
-      console.log(response);
-      setIsLoadingBot(response.statusBot)
-    })
-    .catch((err) => {
-      console.log(err);
-      // Alert.alert("Falha!", "Falha ao verificar status do bot");
-      Alert.alert("Falha!", "Falha ao verificar status do bot");
-    });
-
+    botService
+      .verificarBot()
+      .then((response) => {
+        console.log("===========RESPONSESTATUS");
+        console.log(response);
+        setIsLoadingBot(response.statusBot);
+      })
+      .catch((err) => {
+        console.log(err);
+        // Alert.alert("Falha!", "Falha ao verificar status do bot");
+        Alert.alert("Falha!", "Falha ao verificar status do bot");
+      });
   }, []);
 
   const validateFields = () => {
@@ -69,108 +102,220 @@ export default function Inicio() {
     setTituloAlert(null);
     setMensagemAlert(null);
 
-    console.log("==================")
-    console.log(linkSorteio)
-     const regexSorteioInsta = /https:\/\/www\.instagram\.com\/.*/gm;
-    if (linkSorteio == null || linkSorteio== "" || !regexSorteioInsta.test(linkSorteio) ) {
+    console.log("==================");
+    console.log(linkSorteio);
+    const regexSorteioInsta = /https:\/\/www\.instagram\.com\/.*/gm;
+    if (
+      linkSorteio == null ||
+      linkSorteio == "" ||
+      !regexSorteioInsta.test(linkSorteio)
+    ) {
       setErrorLinkSorteio("Por favor insira um link de sorteio válido");
       error = true;
     }
 
-    console.log("==================")
-    console.log(textoComentario)
-    if (textoComentario == null || textoComentario== "") {
+    console.log("==================");
+    console.log(textoComentario);
+    if (textoComentario == null || textoComentario == "") {
       setErrorTextoComentario("Por favor insira um comentário");
       error = true;
     }
 
     if (checkBoxPerfis == true && listaPerfis.length == 0) {
-      console.log("Foraa")
-        Alert.alert("Verifique!", "Se você deseja marcar perfis é necessário que haja pelo menos um perfil listado");
-        error = true;
-      }
-      
-      if (
-        checkBoxPerfis == true &&
-        listaPerfis.length > 0 &&
-        checkBoxAntes == false &&
-        checkBoxDepois == false
-        ) {
-          console.log("Dentrooo")
-          Alert.alert("Verifique!", "Se você deseja marcar perfis é necessário que escolha se quer marcar antes ou depois");
-          error = true;
-        }
-        console.log("Depois deles")
+      console.log("Foraa");
+      Alert.alert(
+        "Verifique!",
+        "Se você deseja marcar perfis é necessário que haja pelo menos um perfil listado"
+      );
+      error = true;
+    }
 
-        setIsLoadingBot(false);
+    if (
+      checkBoxPerfis == true &&
+      listaPerfis.length > 0 &&
+      checkBoxAntes == false &&
+      checkBoxDepois == false
+    ) {
+      console.log("Dentrooo");
+      Alert.alert(
+        "Verifique!",
+        "Se você deseja marcar perfis é necessário que escolha se quer marcar antes ou depois"
+      );
+      error = true;
+    }
+    console.log("Depois deles");
+
+    setIsLoadingBot(false);
     return !error;
   };
 
   const iniciarBot = () => {
-    setIsLoadingBot(true)
+    // setIsLoadingBot(true)
     if (validateFields()) {
-      setIsLoadingBot(true)
+      // setIsLoadingBot(true)
       let ordemMarcacao = checkBoxAntes ? "antes" : "depois";
       const data = {
-        tempoComentario: "45",
-        textoComentario: textoComentario,
+        tempo_comentario: 30,
+        comentario: textoComentario,
         repetirMarcacao: checkBoxRepetirMarcacao,
         linkSorteio: linkSorteio,
         antesOuDepois: ordemMarcacao,
         podeComentar: true,
         qtdComentarios: 0,
-        podeMarcar: checkBoxPerfis,
-        indexPerfil: 0
+        marca_usuario: checkBoxPerfis,
+        indexPerfil: 0,
+        lista_usuario_marcar: listaPerfis,
       };
-      console.log("=========DATA")
+      console.log("=========TENTANDO INICIAR=========");
+      console.log(data);
+      // let botScripts = `
+      // alert("Inicio7")
+      // async function sleep(seconds) {
+      //   var e = new Date().getTime() + (seconds * 1000);
+      //   while (new Date().getTime() <= e) {
+      //   }
+      // }
+      
+      // function construirComentario(dados) {
+      //     if (dados.marca_usuario) {
+      //       var comment = dados.lista_usuario_marcar.map((usuario) => {
+      //         return '@'+ usuario.trim()+ ' ' + dados.comentario 
+      //       });
+            
+      //       if (dados.antes_depois.includes('depois')) {
+      //         comment = dados.lista_usuario_marcar.map((usuario) => {
+      //           return dados.comentario+ ' ' + '@' + usuario.trim() 
+      //         });
+      //       }
+            
+      //       return comment;
+      //     }
+          
+      //     return [dados.comentario];
+      //   }
+        
+      //   const comentar = async (dados) => {
+      //     // alert("comentar")
+      //     try {
+      //       // await sleep(20);
+      //       let comentarioCompleto = construirComentario(dados);
+      //       // alert(comentarioCompleto)
+         
+      //       for (const comentarioAtual of comentarioCompleto) {
+      //         // alert(comentarioAtual)
+      //         var comment_text = document.getElementsByClassName("Ypffh")[0];
+      //         if (comment_text) {
+      //           alert("aqui")
+      //       comment_text.click();
+      //       comment_text.focus();
+      //       var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+      //         window.HTMLTextAreaElement.prototype,
+      //         "value"
+      //       ).set;
+      //       alert("aqui2")
+      //       nativeInputValueSetter.call(comment_text, comentarioAtual);
+      //       var ev2 = new Event("input", { bubbles: true });
+      //       comment_text.dispatchEvent(ev2);
+      //       var submit_button = document.getElementsByClassName("y3zKF")[0];
+      //       submit_button.click();
+      //       alert("aqui3")
+      //       await sleep(dados.tempo_comentario);
+      //       alert("comentando")
+              
+      //         if (!dados.repetir_marcacao) {
+      //           comentarioCompleto = [dados.comentario]
+      //         }
+      //     }
+      //       }
+      //       if (!dados.repetir_marcacao) {
+      //         dados.marca_usuario = false;
+      //       }
+      //       comentar(dados);
+        
+      //     }catch (e) {
+      //       console.log(e);
+      //     }
+      //   }
+        
+      //   comentar(${JSON.stringify(data)})
+      // `;
+      let botScripts = `  
+      alert("noviususas")
+      function sleep(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
 
-      console.log("=========TENTANDO INICIAR=========")
-      console.log(data)
-      botService
-        .iniciarBot(data)
-        .then((response) => {
-          console.log(response);
-          if (response.statusCode == 200) {
-            Alert.alert("Sucesso!", "Serviço iniciado!");
-          } else if (response.statusCode == 401 && response.message.includes('Usuário inexistente')) {
-            Alert.alert('Negado', response.message)
-            setIsLoadingBot(false);
+      async function comentar(args) {
+        var checkExist = setInterval(async function() {
+          if (document.getElementsByClassName("Ypffh")[0]) {
+             clearInterval(checkExist);
           }
-        })
-        .catch((err) => {
-          setIsLoadingBot(false);
-          Alert.alert("Falha!", err.message);
-        });
+       }, 100)
+       if(checkExist){
+
+         alert("vem muie")
+         var comment_text = document.getElementsByClassName("Ypffh")[0];
+         if(comment_text){
+
+           alert("achoo")
+           var comment_text = document.getElementsByClassName("Ypffh")[0];
+           comment_text.click();
+           comment_text.focus();
+           var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+             window.HTMLTextAreaElement.prototype,
+             "value"
+           ).set;
+           nativeInputValueSetter.call(comment_text, args.comentario);
+     
+           var ev2 = new Event("input", { bubbles: true });
+           comment_text.dispatchEvent(ev2);
+           var submit_button = document.getElementsByClassName("y3zKF")[0];
+           submit_button.click();
+           await sleep(args.tempo_comentario * 1000);
+           await comentar(args)
+
+       }
+
+         }
+          
+        }
+        comentar(${JSON.stringify(data)})
+       `
+      console.log("========Data==============")
+      console.log(data)
+      setLinkSorteio(linkSorteio);
+      setBotScript(botScripts);
+      setModalVisible(true);
     }
   };
 
   const pararBot = () => {
-    if(isLoadingBot){
+    if (isLoadingBot) {
       botService
-      .pararBot()
-      .then((response) => {
-        if (response.statusCode == 200) {
-          console.log(response.quantidadeComentarios)
-          Alert.alert("Sucesso!", "Serviço parado");
-          setQuantidadeComentarios(response.quantidadeComentarios)
-          setIsLoadingBot(false);
-        }else{
+        .pararBot()
+        .then((response) => {
+          if (response.statusCode == 200) {
+            console.log(response.quantidadeComentarios);
+            Alert.alert("Sucesso!", "Serviço parado");
+            setQuantidadeComentarios(response.quantidadeComentarios);
+            setIsLoadingBot(false);
+          } else {
+            Alert.alert("Falha!", "Houve um problema ao acessar o servidor");
+          }
+        })
+        .catch((err) => {
           Alert.alert("Falha!", "Houve um problema ao acessar o servidor");
-        }
-      })
-      .catch((err) => {
-        Alert.alert("Falha!", "Houve um problema ao acessar o servidor");
-      });
-    }else{
+        });
+    } else {
       Alert.alert("Falha!", "Não existe bot iniciado no momento");
     }
-
   };
 
   const getPerfis = () => {
     console.log("====entrou");
     setLoadingPerfis(true);
-    userServices.getPerfis()
+    userServices
+      .getPerfis()
       .then((perfis) => {
         console.log("dentro");
         console.log(perfis);
@@ -190,26 +335,27 @@ export default function Inicio() {
   };
 
   const updatePerfis = () => {
-    if(listaPerfis.length > 0){
-      userServices.updatePerfis(listaPerfis)
+    if (listaPerfis.length > 0) {
+      userServices
+        .updatePerfis(listaPerfis)
         .then((perfis) => {
-        
-          console.log("=========LIST=========")
-          if(perfis.statusCode == "200"){
+          console.log("=========LIST=========");
+          if (perfis.statusCode == "200") {
             Alert.alert("Sucesso!", perfis.message);
-          }else{
+          } else {
             Alert.alert("Falha!", "Falha ao salvar lista de perfis");
           }
-          
         })
         .catch((err) => {
-          console.log("erroo=====")
+          console.log("erroo=====");
           Alert.alert("Falha!", "Falha ao salvar lista de perfis");
         });
-    }else{
-      Alert.alert("Falha!", "É necessário que pelo menos um perfil esteja na lista para salvá-la");
+    } else {
+      Alert.alert(
+        "Falha!",
+        "É necessário que pelo menos um perfil esteja na lista para salvá-la"
+      );
     }
-
   };
 
   return (
@@ -294,7 +440,7 @@ export default function Inicio() {
           checkedColor="green"
           style={{ backgroundColor: "red" }}
           onPress={() => {
-            if(!checkBoxPerfis){
+            if (!checkBoxPerfis) {
               getPerfis();
             }
             setCheckBoxPerfis(!checkBoxPerfis);
@@ -329,10 +475,10 @@ export default function Inicio() {
                   onSubmitEditing={() => {
                     const regexArroba = /@.*/gm;
 
-                    console.log("===valid")
+                    console.log("===valid");
                     if (regexArroba.test(String(perfil))) {
                       setErrorPerfil("Por favor insira o perfil sem '@' ");
-                    }else if (perfil == null || perfil == ""){
+                    } else if (perfil == null || perfil == "") {
                       setErrorPerfil("Digite um perfil por gentileza");
                     } else {
                       setListaPerfis([{ name: perfil }, ...listaPerfis]);
@@ -347,10 +493,10 @@ export default function Inicio() {
                   onPress={() => {
                     const regexArroba = /@.*/gm;
 
-                    console.log("===valid")
+                    console.log("===valid");
                     if (regexArroba.test(String(perfil))) {
                       setErrorPerfil("Por favor insira o perfil sem '@' ");
-                    }else if (perfil == null || perfil == ""){
+                    } else if (perfil == null || perfil == "") {
                       setErrorPerfil("Digite um perfil por gentileza");
                     } else {
                       setListaPerfis([{ name: perfil }, ...listaPerfis]);
@@ -454,20 +600,43 @@ export default function Inicio() {
 
           <StyledButton title="Parar" onPress={() => pararBot()} />
         </View>
-      {quantidadeComentarios > 0 &&
-       <View
-       style={{
-         flex: 1,
-         justifyContent: "center",
-         alignItems: "center",
-         marginBottom: 30,
-       }}
-     > 
-      <Text style={{fontWeight: 'bold'}}>O bot realizou {quantidadeComentarios} comentário(s)</Text>
-      </View>
-      }
+        {quantidadeComentarios > 0 && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>
+              O bot realizou {quantidadeComentarios} comentário(s)
+            </Text>
+          </View>
+        )}
       </ScrollView>
 
+      <Modal
+        animationType={"slide"}
+        visible={modalVisible}
+        // onRequestClose={hide.bind(this)}
+        transparent
+      >
+        <View style={{ flex: 1 }}>
+          <WebView
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            injectedJavaScript={botScript}
+            source={{
+              uri: `${linkSorteio}/comments`,
+            }}
+            style={{ marginTop: 10, height: "70%" }}
+          />
+        </View>
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <StyledButton title="Fechar" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
     </View>
   );
 }

@@ -1,23 +1,12 @@
 import React, { useState } from "react";
-import { SliderComponent } from "react-native";
 import { View, Modal } from "react-native";
-import { Text } from "react-native-elements";
 import { WebView } from 'react-native-webview';
 import StyledButton from "../components/Styledbutton";
 
 export default function Teste(){
     [ modalVisible, setModalVisible] = useState(true);
 
-    const closeWebView = () =>{
-
-    }
-
-    const onMessage = (messge) =>{
-        console.log("Message -----------------")
-        console.log(message)
-    }
-
-    let yourAlert = `
+    let botScript = `
     // alert("injetou 3");
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,7 +14,6 @@ function sleep(ms) {
 async function comentar() {
   var i = 0;
   while (true) {
-    // alert("dentro do while");
     var comment_text = document.getElementsByClassName("Ypffh")[0];
     if (comment_text) {
       var comment_text = document.getElementsByClassName("Ypffh")[0];
@@ -63,8 +51,7 @@ comentar();`
         <WebView
         javaScriptEnabled={true}
         domStorageEnabled={true}
-        injectedJavaScript={yourAlert}
-        onMessage={onMessage}
+        injectedJavaScript={botScript}
         source={{
           uri: 'https://www.instagram.com/p/CN3f636BRAY/comments'
         }}
