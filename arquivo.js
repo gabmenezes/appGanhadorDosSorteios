@@ -73,9 +73,6 @@ function construirComentario(dados) {
 // }
 // comentar();
 
-
-
-
 const comentar = async (dados) => {
     try {
       let comentarioCompleto = construirComentario(dados);
@@ -99,7 +96,6 @@ const comentar = async (dados) => {
         // console.log(`Comentário enviado ao post: ${comentarioAtual} às ${new Date()}`);
         await sleep(dados.tempo_comentario);
   
-        
         if (!dados.repetir_marcacao) {
           comentarioCompleto = [dados.comentario]
         }
