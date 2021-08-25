@@ -49,9 +49,13 @@ comentar();`
           alignItems:"center", 
           height: Dimensions.get('window').height,
         }}>
-          <Button 
+          <StyledButton 
             title="Entrar no Instagram" 
             onPress={() => setModalVisible(true)}
+          />
+          <StyledButton 
+            title="Já estou logado" 
+            onPress={() =>navigation.navigate('Home') }
           />
         </View>
         <Modal

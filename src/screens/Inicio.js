@@ -157,9 +157,9 @@ export default function Inicio() {
       const data = {
         tempo_comentario: 30,
         comentario: textoComentario,
-        repetirMarcacao: checkBoxRepetirMarcacao,
+        repetir_marcacao: checkBoxRepetirMarcacao,
         linkSorteio: linkSorteio,
-        antesOuDepois: ordemMarcacao,
+        antes_depois: ordemMarcacao,
         podeComentar: true,
         qtdComentarios: 0,
         marca_usuario: checkBoxPerfis,
@@ -240,11 +240,33 @@ export default function Inicio() {
       //   comentar(${JSON.stringify(data)})
       // `;
       let botScripts = `  
-      alert("noviususas")
+      alert("noviususaas")
       function sleep(ms) {
           return new Promise((resolve) => setTimeout(resolve, ms));
         }
-
+    
+      function construirComentario(dados) {
+        var comment = []
+        if (dados.marca_usuario) {
+          comment = dados.lista_usuario_marcar.map((usuario) => {
+            alert(usuario.name)
+            return '@'+ usuario.name.trim()+ ' ' + dados.comentario 
+          });
+          
+          alert('fim')
+          if (dados.antes_depois.includes('depois')) {
+            alert('fim')
+            comment = dados.lista_usuario_marcar.map((usuario) => {
+              return dados.comentario+ ' ' + '@' + usuario.name.trim() 
+            });
+          }
+          alert(comment)
+          return comment;
+        }
+        
+        return [dados.comentario];
+      }
+    
       async function comentar(args) {
         var checkExist = setInterval(async function() {
           if (document.getElementsByClassName("Ypffh")[0]) {
@@ -252,12 +274,12 @@ export default function Inicio() {
           }
        }, 100)
        if(checkExist){
-
          alert("vem muie")
          var comment_text = document.getElementsByClassName("Ypffh")[0];
          if(comment_text){
-
-           alert("achoo")
+           let comentarioCompleto = construirComentario(args);
+           for (var comentarioAtual of comentarioCompleto) {
+    
            var comment_text = document.getElementsByClassName("Ypffh")[0];
            comment_text.click();
            comment_text.focus();
@@ -265,19 +287,20 @@ export default function Inicio() {
              window.HTMLTextAreaElement.prototype,
              "value"
            ).set;
-           nativeInputValueSetter.call(comment_text, args.comentario);
+           nativeInputValueSetter.call(comment_text, comentarioAtual);
      
            var ev2 = new Event("input", { bubbles: true });
            comment_text.dispatchEvent(ev2);
            var submit_button = document.getElementsByClassName("y3zKF")[0];
            submit_button.click();
            await sleep(args.tempo_comentario * 1000);
-           await comentar(args)
-
-       }
-
-         }
-          
+          }
+          if (!args.repetir_marcacao) {
+            args.marca_usuario = false;
+          }
+          await comentar(args)
+          }
+         }  
         }
         comentar(${JSON.stringify(data)})
        `
@@ -598,7 +621,7 @@ export default function Inicio() {
             <StyledButton title="Iniciar" onPress={() => iniciarBot()} />
           )}
 
-          <StyledButton title="Parar" onPress={() => pararBot()} />
+          {/* <StyledButton title="Parar" onPress={() => pararBot()} /> */}
         </View>
         {quantidadeComentarios > 0 && (
           <View
