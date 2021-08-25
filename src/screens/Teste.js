@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { View, Modal } from "react-native";
+import { View, Modal, Dimensions  } from "react-native";
 import { WebView } from 'react-native-webview';
 import StyledButton from "../components/Styledbutton";
+import { Button } from "react-native-elements";
 
-export default function Teste(){
+
+export default function Teste({ navigation }){
     [ modalVisible, setModalVisible] = useState(true);
 
     let botScript = `
@@ -15,6 +17,7 @@ async function comentar() {
   var i = 0;
   while (true) {
     var comment_text = document.getElementsByClassName("Ypffh")[0];
+
     if (comment_text) {
       var comment_text = document.getElementsByClassName("Ypffh")[0];
       comment_text.click();
@@ -40,31 +43,43 @@ comentar();`
 
     return (
         <>
-        <StyledButton title="Abrir" onPress={() => setModalVisible(true)} />
+        <View style={{
+          justifyContent: "center",
+          flexDirection: "column", 
+          alignItems:"center", 
+          height: Dimensions.get('window').height,
+        }}>
+          <Button 
+            title="Entrar no Instagram" 
+            onPress={() => setModalVisible(true)}
+          />
+        </View>
         <Modal
-    animationType={'slide'}
-    visible={modalVisible}
-    // onRequestClose={hide.bind(this)}
-    transparent
-  >
-        <View style={{flex: 1}}>
-        <WebView
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        injectedJavaScript={botScript}
-        source={{
-          uri: 'https://www.instagram.com/p/CN3f636BRAY/comments'
-        }}
-        style={{ marginTop: 10, height: "70%" }}
-      />
-      </View>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
-      <StyledButton title="Fechar" onPress={() => setModalVisible(false)} />
-      </View>
-
+          animationType={'slide'}
+          visible={modalVisible}
+          // onRequestClose={hide.bind(this)}
+          transparent
+        >
+        
+          <View style={{flex: 1}}>
+            <WebView
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              // injectedJavaScript={botScript}
+              source={{
+                uri: 'https://www.instagram.com'
+              }}
+              style={{ marginTop: 10, height: "70%" }}
+            />
+          </View>
+          
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <StyledButton title="Fechar" onPress={() => {
+            setModalVisible(false)
+            navigation.navigate('Teste')
+          }} />
+          </View>
       </Modal>
-      
       </>
-
     )
 }

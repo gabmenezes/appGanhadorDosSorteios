@@ -2,9 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import { KeyboardAvoidingView, View, Alert } from "react-native";
 import { Text, Input, Button, Image } from "react-native-elements";
-import { TextInputMask } from "react-native-masked-text";
 import { ActivityIndicator } from "react-native-paper";
-import Icon from "react-native-vector-icons/FontAwesome";
 import styles from "../style/MainStyle";
 import usuarioService from "../services/userServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -67,7 +65,7 @@ export default function Login({ navigation }) {
           if (response.status === 201) {
             navigation.reset({
               index: 0,
-              routes: [{ name: "Home" }],
+              routes: [{ name: "Teste" }],
             });
           } else {
             setTituloErro("Falha");
