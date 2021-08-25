@@ -46,7 +46,7 @@ export default function Home({ navigation }) {
             ),
           }}
         />
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name="Perfil"
           component={Perfil}
           options={{
@@ -55,7 +55,7 @@ export default function Home({ navigation }) {
               <MaterialCommunityIcons name="account" color={color} size={26} />
             ),
           }}
-        />
+        /> */}
 
         <Drawer.Screen
           name="Ajuda"
@@ -68,7 +68,7 @@ export default function Home({ navigation }) {
           }}
         />
 
-<Drawer.Screen
+{/* <Drawer.Screen
           name="Teste"
           component={Teste}
           options={{
@@ -77,7 +77,7 @@ export default function Home({ navigation }) {
               <MaterialCommunityIcons name="help" color={color} size={26} />
             ),
           }}
-        />
+        /> */}
       </Drawer.Navigator>
     </>
   );

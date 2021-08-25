@@ -637,8 +637,6 @@ export default function Inicio() {
             </Text>
           </View>
         )}
-      </ScrollView>
-
       <Modal
         animationType={"slide"}
         visible={modalVisible}
@@ -660,6 +658,8 @@ export default function Inicio() {
           <StyledButton title="Fechar" onPress={() => setModalVisible(false)} />
         </View>
       </Modal>
+      </ScrollView>
+
     </View>
   );
 }

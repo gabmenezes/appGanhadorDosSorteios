@@ -125,11 +125,13 @@ export default function Login({ navigation }) {
       {!isLoadingToken && (
         <>
 
+<View style={{  backgroundColor: "gray", borderRadius:10, padding: 10 }}>
           <Image
-            source={require("../public/images/roboVencedor.png")}
-            style={{ width: 200, height: 200, resizeMode: "stretch" }}
+            source={require("../public/images/ganhadorDosSorteios.png")}
+            style={{ width: 200, height: 100, resizeMode: "stretch" }}
             PlaceholderContent={<ActivityIndicator />}
           />
+          </View>
 
           <View
             style={{
