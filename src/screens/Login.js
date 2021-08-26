@@ -8,7 +8,6 @@ import usuarioService from "../services/userServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import inputStyles from "../style/inpuStyles";
 import buttonStyles from "../style/buttonStyles";
-// const imagem = require("./roboVencedor.png")
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState(null);
@@ -63,9 +62,10 @@ export default function Login({ navigation }) {
         .then((response) => {
           setLoading(false);
           if (response.status === 201) {
+            
             navigation.reset({
               index: 0,
-              routes: [{ name: "Teste" }],
+              routes: [{ name: "WebView" }],
             });
           } else {
             setTituloErro("Falha");

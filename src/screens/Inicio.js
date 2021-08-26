@@ -23,6 +23,9 @@ export default function Inicio() {
   const [linkSorteio, setLinkSorteio] = useState(null);
   const [errorLinkSorteio, setErrorLinkSorteio] = useState(null);
 
+  const [comentarioTempo , setComentarioTempo] = useState(60);
+  const [errorComentarioTempo , setErrorComentarioTempo] = useState(false);
+
   const [textoComentario, setTextoComentario] = useState(null);
   const [errorTextoComentario, setErrorTextoComentario] = useState(null);
 
@@ -47,49 +50,14 @@ export default function Inicio() {
   const [modalVisible, setModalVisible] = useState(false);
   const [botScript, setBotScript] = useState("");
 
-  //   let botScript = `
-  //     // alert("injetou 3");
-  // function sleep(ms) {
-  //   return new Promise((resolve) => setTimeout(resolve, ms));
-  // }
-  // async function comentar() {
-  //   var i = 0;
-  //   while (true) {
-  //     // alert("dentro do while");
-  //     var comment_text = document.getElementsByClassName("Ypffh")[0];
-  //     if (comment_text) {
-  //       var comment_text = document.getElementsByClassName("Ypffh")[0];
-  //       comment_text.click();
-  //       comment_text.focus();
-  //       var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-  //         window.HTMLTextAreaElement.prototype,
-  //         "value"
-  //       ).set;
-  //       nativeInputValueSetter.call(comment_text, "teste"+i);
-
-  //       var ev2 = new Event("input", { bubbles: true });
-  //       comment_text.dispatchEvent(ev2);
-  //       var submit_button = document.getElementsByClassName("y3zKF")[0];
-  //       submit_button.click();
-  //       await sleep(30000);
-  //       i = i+1
-  //     }
-  //     await sleep(30000);
-  //   }
-  // }
-  // comentar();`
-
   useEffect(() => {
-    console.log("============TEDSSS");
     botService
       .verificarBot()
       .then((response) => {
-        console.log("===========RESPONSESTATUS");
-        console.log(response);
         setIsLoadingBot(response.statusBot);
       })
       .catch((err) => {
-        console.log(err);
+        
         // Alert.alert("Falha!", "Falha ao verificar status do bot");
         Alert.alert("Falha!", "Falha ao verificar status do bot");
       });
@@ -101,10 +69,18 @@ export default function Inicio() {
     setErrorTextoComentario(null);
     setTituloAlert(null);
     setMensagemAlert(null);
+    setErrorComentarioTempo(null);
 
-    console.log("==================");
-    console.log(linkSorteio);
+    const onlyNumber = /^[0-9]*$/gm
+
+    if (comentarioTempo < 60 || comentarioTempo == "" || comentarioTempo == null
+    || !onlyNumber.test(comentarioTempo)) {
+      setErrorComentarioTempo("Mínimo de 60 segundos.")
+      error = true;
+    }
+
     const regexSorteioInsta = /https:\/\/www\.instagram\.com\/.*/gm;
+
     if (
       linkSorteio == null ||
       linkSorteio == "" ||
@@ -114,15 +90,12 @@ export default function Inicio() {
       error = true;
     }
 
-    console.log("==================");
-    console.log(textoComentario);
     if (textoComentario == null || textoComentario == "") {
       setErrorTextoComentario("Por favor insira um comentário");
       error = true;
     }
 
     if (checkBoxPerfis == true && listaPerfis.length == 0) {
-      console.log("Foraa");
       Alert.alert(
         "Verifique!",
         "Se você deseja marcar perfis é necessário que haja pelo menos um perfil listado"
@@ -136,26 +109,24 @@ export default function Inicio() {
       checkBoxAntes == false &&
       checkBoxDepois == false
     ) {
-      console.log("Dentrooo");
+      
       Alert.alert(
         "Verifique!",
         "Se você deseja marcar perfis é necessário que escolha se quer marcar antes ou depois"
       );
       error = true;
     }
-    console.log("Depois deles");
 
     setIsLoadingBot(false);
     return !error;
   };
 
   const iniciarBot = () => {
-    // setIsLoadingBot(true)
     if (validateFields()) {
-      // setIsLoadingBot(true)
       let ordemMarcacao = checkBoxAntes ? "antes" : "depois";
+
       const data = {
-        tempo_comentario: 30,
+        tempo_comentario: comentarioTempo,
         comentario: textoComentario,
         repetir_marcacao: checkBoxRepetirMarcacao,
         linkSorteio: linkSorteio,
@@ -166,81 +137,8 @@ export default function Inicio() {
         indexPerfil: 0,
         lista_usuario_marcar: listaPerfis,
       };
-      console.log("=========TENTANDO INICIAR=========");
-      console.log(data);
-      // let botScripts = `
-      // alert("Inicio7")
-      // async function sleep(seconds) {
-      //   var e = new Date().getTime() + (seconds * 1000);
-      //   while (new Date().getTime() <= e) {
-      //   }
-      // }
-      
-      // function construirComentario(dados) {
-      //     if (dados.marca_usuario) {
-      //       var comment = dados.lista_usuario_marcar.map((usuario) => {
-      //         return '@'+ usuario.trim()+ ' ' + dados.comentario 
-      //       });
-            
-      //       if (dados.antes_depois.includes('depois')) {
-      //         comment = dados.lista_usuario_marcar.map((usuario) => {
-      //           return dados.comentario+ ' ' + '@' + usuario.trim() 
-      //         });
-      //       }
-            
-      //       return comment;
-      //     }
-          
-      //     return [dados.comentario];
-      //   }
-        
-      //   const comentar = async (dados) => {
-      //     // alert("comentar")
-      //     try {
-      //       // await sleep(20);
-      //       let comentarioCompleto = construirComentario(dados);
-      //       // alert(comentarioCompleto)
-         
-      //       for (const comentarioAtual of comentarioCompleto) {
-      //         // alert(comentarioAtual)
-      //         var comment_text = document.getElementsByClassName("Ypffh")[0];
-      //         if (comment_text) {
-      //           alert("aqui")
-      //       comment_text.click();
-      //       comment_text.focus();
-      //       var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-      //         window.HTMLTextAreaElement.prototype,
-      //         "value"
-      //       ).set;
-      //       alert("aqui2")
-      //       nativeInputValueSetter.call(comment_text, comentarioAtual);
-      //       var ev2 = new Event("input", { bubbles: true });
-      //       comment_text.dispatchEvent(ev2);
-      //       var submit_button = document.getElementsByClassName("y3zKF")[0];
-      //       submit_button.click();
-      //       alert("aqui3")
-      //       await sleep(dados.tempo_comentario);
-      //       alert("comentando")
-              
-      //         if (!dados.repetir_marcacao) {
-      //           comentarioCompleto = [dados.comentario]
-      //         }
-      //     }
-      //       }
-      //       if (!dados.repetir_marcacao) {
-      //         dados.marca_usuario = false;
-      //       }
-      //       comentar(dados);
-        
-      //     }catch (e) {
-      //       console.log(e);
-      //     }
-      //   }
-        
-      //   comentar(${JSON.stringify(data)})
-      // `;
+
       let botScripts = `  
-      alert("noviususaas")
       function sleep(ms) {
           return new Promise((resolve) => setTimeout(resolve, ms));
         }
@@ -249,18 +147,14 @@ export default function Inicio() {
         var comment = []
         if (dados.marca_usuario) {
           comment = dados.lista_usuario_marcar.map((usuario) => {
-            alert(usuario.name)
             return '@'+ usuario.name.trim()+ ' ' + dados.comentario 
           });
           
-          alert('fim')
           if (dados.antes_depois.includes('depois')) {
-            alert('fim')
             comment = dados.lista_usuario_marcar.map((usuario) => {
               return dados.comentario+ ' ' + '@' + usuario.name.trim() 
             });
           }
-          alert(comment)
           return comment;
         }
         
@@ -274,7 +168,6 @@ export default function Inicio() {
           }
        }, 100)
        if(checkExist){
-         alert("vem muie")
          var comment_text = document.getElementsByClassName("Ypffh")[0];
          if(comment_text){
            let comentarioCompleto = construirComentario(args);
@@ -304,9 +197,15 @@ export default function Inicio() {
         }
         comentar(${JSON.stringify(data)})
        `
-      console.log("========Data==============")
-      console.log(data)
-      setLinkSorteio(linkSorteio);
+
+      if (linkSorteio.includes('?utm_medium=copy_link')) {
+        setLinkSorteio(linkSorteio.replace('/?utm_medium=copy_link', ''))
+      } else if (linkSorteio.includes('/?utm_source=ig_web_copy_link')) {
+        setLinkSorteio(linkSorteio.replace('/?utm_source=ig_web_copy_link', ''))
+      } else if (linkSorteio.slice(-1) == "/") {
+        setLinkSorteio(linkSorteio.substring(0 , linkSorteio.length - 1))
+      }
+
       setBotScript(botScripts);
       setModalVisible(true);
     }
@@ -318,7 +217,6 @@ export default function Inicio() {
         .pararBot()
         .then((response) => {
           if (response.statusCode == 200) {
-            console.log(response.quantidadeComentarios);
             Alert.alert("Sucesso!", "Serviço parado");
             setQuantidadeComentarios(response.quantidadeComentarios);
             setIsLoadingBot(false);
@@ -335,19 +233,14 @@ export default function Inicio() {
   };
 
   const getPerfis = () => {
-    console.log("====entrou");
     setLoadingPerfis(true);
     userServices
       .getPerfis()
       .then((perfis) => {
-        console.log("dentro");
-        console.log(perfis);
         setLoadingPerfis(false);
         setListaPerfis(perfis);
       })
       .catch((err) => {
-        console.log("Fora");
-        console.log(err);
         setLoadingPerfis(false);
         setTituloAlert("Falha!");
         setMensagemAlert(
@@ -362,7 +255,7 @@ export default function Inicio() {
       userServices
         .updatePerfis(listaPerfis)
         .then((perfis) => {
-          console.log("=========LIST=========");
+          
           if (perfis.statusCode == "200") {
             Alert.alert("Sucesso!", perfis.message);
           } else {
@@ -370,7 +263,7 @@ export default function Inicio() {
           }
         })
         .catch((err) => {
-          console.log("erroo=====");
+          
           Alert.alert("Falha!", "Falha ao salvar lista de perfis");
         });
     } else {
@@ -404,24 +297,30 @@ export default function Inicio() {
 
         <Line />
 
-        {/* <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row" }}>
           <Input
-            placeholder="Espera"
+            placeholder="Segundos"
             leftIcon={{ type: "font-awesome", name: "hourglass", size: 18 }}
             onChangeText={(value) => {
-              setEmail(value);
-              setErrorEmail(null);
+              setComentarioTempo(value);
+              setErrorComentarioTempo(null);
             }}
-            errorMessage={errorEmail}
+
+            keyboardType= "numeric"
+            errorMessage={errorComentarioTempo}
             inputStyle={inputStyles.inputStyle}
             inputContainerStyle={inputStyles.inputContainer}
             containerStyle={{
+              // borderColor: 'green', 
+              // borderStyle: 'solid', 
+              // borderWidth: 2,
               margin: 5,
               marginRight: -1,
               marginTop: 20,
               flex: 1,
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "center",
+              alignItems: 'center'
             }}
             leftIconContainerStyle={inputStyles.leftIconContainerStyle}
           />
@@ -432,9 +331,9 @@ export default function Inicio() {
               width: "35%",
             }}
           >
-            <Text>Mínimo de 45 segundos</Text>
+            <Text>Mínimo de 60 segundos</Text>
           </View>
-        </View> */}
+        </View>
         <View style={{ alignItems: "center", justifyContent: "center" }}>
           {/* <Text>tempo mínimo de 45 segundos, por comentario</Text> */}
         </View>
@@ -498,7 +397,7 @@ export default function Inicio() {
                   onSubmitEditing={() => {
                     const regexArroba = /@.*/gm;
 
-                    console.log("===valid");
+                    
                     if (regexArroba.test(String(perfil))) {
                       setErrorPerfil("Por favor insira o perfil sem '@' ");
                     } else if (perfil == null || perfil == "") {
@@ -516,7 +415,7 @@ export default function Inicio() {
                   onPress={() => {
                     const regexArroba = /@.*/gm;
 
-                    console.log("===valid");
+                    
                     if (regexArroba.test(String(perfil))) {
                       setErrorPerfil("Por favor insira o perfil sem '@' ");
                     } else if (perfil == null || perfil == "") {
@@ -615,14 +514,33 @@ export default function Inicio() {
             marginBottom: 30,
           }}
         >
-          {isLoadingBot && <ActivityIndicator color="grey" />}
+          {/* {isLoadingBot && <ActivityIndicator color="grey" />} */}
 
           {!isLoadingBot && (
-            <StyledButton title="Iniciar" onPress={() => iniciarBot()} />
+            <StyledButton title="Iniciar" onPress={() => {
+              iniciarBot()
+            }} />
           )}
-
-          {/* <StyledButton title="Parar" onPress={() => pararBot()} /> */}
         </View>
+        <Modal
+          animationType={"slide"}
+          visible={modalVisible}
+        >
+          <View style={{ flex: 1 }}>
+            <WebView
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              injectedJavaScript={botScript}
+              source={{
+                uri: `${linkSorteio}/comments`,
+              }}
+              style={{ marginTop: 10, height: "70%" }}
+            />
+          </View>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <StyledButton title="Fechar" onPress={() => setModalVisible(false)} />
+          </View>
+        </Modal>
         {quantidadeComentarios > 0 && (
           <View
             style={{
@@ -637,29 +555,8 @@ export default function Inicio() {
             </Text>
           </View>
         )}
-      <Modal
-        animationType={"slide"}
-        visible={modalVisible}
-        // onRequestClose={hide.bind(this)}
-        transparent
-      >
-        <View style={{ flex: 1 }}>
-          <WebView
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            injectedJavaScript={botScript}
-            source={{
-              uri: `${linkSorteio}/comments`,
-            }}
-            style={{ marginTop: 10, height: "70%" }}
-          />
-        </View>
-        <View style={{ alignItems: "center", justifyContent: "center" }}>
-          <StyledButton title="Fechar" onPress={() => setModalVisible(false)} />
-        </View>
-      </Modal>
+        
       </ScrollView>
-
     </View>
   );
 }

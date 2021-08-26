@@ -1,13 +1,8 @@
 import * as React from "react";
-// import { View } from 'react-native';
-// import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Text, Input, Button } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Inicio from "./Inicio";
-import Perfil from "./Perfil";
-import Teste from "./Teste";
 import Ajuda from "./Ajuda";
 import {
   createDrawerNavigator,
@@ -61,16 +56,6 @@ export default function Home({ navigation }) {
             ),
           }}
         />
-        {/* <Drawer.Screen
-          name="Perfil"
-          component={Perfil}
-          options={{
-            tabBarLabel: "Perfil",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="account" color={color} size={26} />
-            ),
-          }}
-        /> */}
 
         <Drawer.Screen
           name="Ajuda"
@@ -82,17 +67,6 @@ export default function Home({ navigation }) {
             ),
           }}
         />
-
-{/* <Drawer.Screen
-          name="Teste"
-          component={Teste}
-          options={{
-            tabBarLabel: "Teste",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="help" color={color} size={26} />
-            ),
-          }}
-        /> */}
       </Drawer.Navigator>
     </>
   );
