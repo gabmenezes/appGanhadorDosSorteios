@@ -15,14 +15,9 @@ export default function Ajuda() {
         <View style={{margin: 5}}>
           <Text style={{textAlign: 'center'}}h4>Adicionando o seu perfil do Instagram</Text>
           <View style={{marginLeft: 10}}>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Acesse o menu lateral</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Clique em Perfil</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Adicione seu perfil sem o @</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Coloque sua senha do instagram</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Clique em cadastrar</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Aguarde o retorno do servidor, se foi bem sucedido.</Text></Unorderedlist>
-            <Text>Observação: Nesta atualização 1.0, o aplicativo do robô vencedor ainda não faz autenticação de dois fatores. Para que tudo ocorra perfeitamente, remova a autenticação de dois fatores do seu perfil, caso esteja habilitada.</Text>
-            <Text>Importante: O robô não salva seus dados do instagram no banco de dados. Uma vez conectado no seu perfil o instagram gera cookies de autenticação. São eles que usaremos para conexões futuras.</Text>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Após autenticação você será redirecionado para uma tela onde terá dois botões, clique em logar no instagram.</Text></Unorderedlist>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Coloque seus dados de acesso. Caso tenha autenticação de dois fatores, coloque-os também.</Text></Unorderedlist>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Aguarde até a tela inicial do instagram e clique no botão em fechar no rodapé da página.</Text></Unorderedlist>
           </View>
         </View>
         <View style={{margin: 5}}>
@@ -60,15 +55,13 @@ export default function Ajuda() {
         <View style={{margin: 5}}>
             <Text style={{textAlign: 'center'}} h4>Como descubro o link do post?</Text>
           <View style={{marginLeft: 10}}>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Acesse o instagram</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Clique em comentar no post do Instagram</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Pegue o link na url, no canto superior do navegador</Text></Unorderedlist>
-            <Unorderedlist bulletUnicode={0x2023}><Text>Você também consegue acesso ao link clicando no íconde de três pontos na parte superior direita da publicação e acessando a opção "copiar link"</Text></Unorderedlist>
-            <Text>Exemplo de link de um post do Instagram: https://www.instagram.com/p/CRcQjn1jJd3/</Text>
-            <Text>Note que o link tem um código no final. Caso o link não esteja neste padrão, possivelmente vai dar erro.</Text>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Acesse o seu instagram pelo seu aplicativo no celular.</Text></Unorderedlist>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Vá até a publicação desejada.</Text></Unorderedlist>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Clique no ícone de três pontos na parte superior direita da publicação e acessando a opção "copiar link"</Text></Unorderedlist>
+            <Unorderedlist bulletUnicode={0x2023}><Text>Coloque o link no campo de link do instagram no aplicativo.</Text></Unorderedlist>
           </View>
         </View>
-        <Text style={{textAlign: 'center'}}>Copyright - 2021 - Robô Vencedor</Text>
+        <Text style={{textAlign: 'center'}}>Copyright - 2021 - Ganhador de Sorteios</Text>
       </ScrollView>
       </View>
     </>

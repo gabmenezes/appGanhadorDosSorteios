@@ -35,6 +35,21 @@ export default function Home({ navigation }) {
         activeColor="white"
         labelStyle={{ fontSize: 12 }}
         barStyle={{ backgroundColor: "white" }}
+
+        drawerContent={props => {
+          return (
+            <DrawerContentScrollView {...props}>
+              <DrawerItemList {...props} />
+              <DrawerItem label="Sair" onPress={() => {
+                 AsyncStorage.removeItem("TOKEN");
+                 navigation.reset({
+                   index: 0,
+                   routes: [{ name: "Login" }],
+                 });
+              }} />
+            </DrawerContentScrollView>
+          )
+        }}
       >
         <Drawer.Screen
           name="Inicio"
