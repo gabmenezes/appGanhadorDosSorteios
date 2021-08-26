@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { View, Modal, Dimensions  } from "react-native";
 import { WebView } from 'react-native-webview';
 import StyledButton from "../components/Styledbutton";
+import { Text } from "react-native-elements";
 
 export default function WebViewInstagram({ navigation }) {
-    const [ modalVisible, setModalVisible] = useState(true);
+    const [ modalVisible, setModalVisible] = useState(false);
 
     return (
         <>
@@ -14,6 +15,10 @@ export default function WebViewInstagram({ navigation }) {
           alignItems:"center", 
           height: Dimensions.get('window').height,
         }}>
+          <View style={{alignItems: "center", justifyContent: "center", margin: 20}}>
+          <Text h4 style={{textAlign: "center"}}>Antes de iniciar é necessário que esteja logado no instagram</Text>
+        </View>
+          
           <StyledButton 
             title="Entrar no Instagram" 
             onPress={() => setModalVisible(true)}

@@ -51,12 +51,12 @@ export default function Login({ navigation }) {
 
   const enter = () => {
     setLoading(true);
-    let data = {
-      email: email.toLowerCase(),
-      password: password,
-    };
-
+    
     if (validateFields()) {
+      let data = {
+        email: email.toLowerCase(),
+        password: password,
+      };
       usuarioService
         .login(data)
         .then((response) => {

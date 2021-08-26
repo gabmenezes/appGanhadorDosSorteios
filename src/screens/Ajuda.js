@@ -1,8 +1,7 @@
 import * as React from "react";
 import { View, ScrollView } from "react-native";
-import { Text, Input, Button } from "react-native-elements";
+import { Text } from "react-native-elements";
 import Unorderedlist from 'react-native-unordered-list';
-import Line from "../components/Line";
 
 export default function Ajuda() {
   return (
