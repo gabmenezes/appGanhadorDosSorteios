@@ -109,7 +109,7 @@ export default function Inicio() {
       checkBoxAntes == false &&
       checkBoxDepois == false
     ) {
-      
+
       Alert.alert(
         "Verifique!",
         "Se você deseja marcar perfis é necessário que escolha se quer marcar antes ou depois"
@@ -124,6 +124,8 @@ export default function Inicio() {
   const iniciarBot = () => {
     if (validateFields()) {
       let ordemMarcacao = checkBoxAntes ? "antes" : "depois";
+      const horaAtual = new Date();
+      const horasAFrente = horaAtual.setHours(horaAtual.getHours()+ 3)
 
       const data = {
         tempo_comentario: comentarioTempo,
@@ -136,66 +138,82 @@ export default function Inicio() {
         marca_usuario: checkBoxPerfis,
         indexPerfil: 0,
         lista_usuario_marcar: listaPerfis,
+        dataParada: horasAFrente
       };
 
-      let botScripts = `  
+      let botScripts = `
       function sleep(ms) {
-          return new Promise((resolve) => setTimeout(resolve, ms));
-        }
-    
-      function construirComentario(dados) {
-        var comment = []
-        if (dados.marca_usuario) {
-          comment = dados.lista_usuario_marcar.map((usuario) => {
-            return '@'+ usuario.name.trim()+ ' ' + dados.comentario 
-          });
-          
-          if (dados.antes_depois.includes('depois')) {
-            comment = dados.lista_usuario_marcar.map((usuario) => {
-              return dados.comentario+ ' ' + '@' + usuario.name.trim() 
-            });
-          }
-          return comment;
-        }
-        
-        return [dados.comentario];
+        return new Promise((resolve) => setTimeout(resolve, ms));
       }
     
-      async function comentar(args) {
-        var checkExist = setInterval(async function() {
-          if (document.getElementsByClassName("Ypffh")[0]) {
-             clearInterval(checkExist);
-          }
-       }, 100)
-       if(checkExist){
-         var comment_text = document.getElementsByClassName("Ypffh")[0];
-         if(comment_text){
-           let comentarioCompleto = construirComentario(args);
-           for (var comentarioAtual of comentarioCompleto) {
+    function construirComentario(dados) {
+      var comment = []
+      if (dados.marca_usuario) {
+        comment = dados.lista_usuario_marcar.map((usuario) => {
+          return '@'+ usuario.name.trim()+ ' ' + dados.comentario 
+        });
     
-           var comment_text = document.getElementsByClassName("Ypffh")[0];
-           comment_text.click();
-           comment_text.focus();
-           var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-             window.HTMLTextAreaElement.prototype,
-             "value"
-           ).set;
-           nativeInputValueSetter.call(comment_text, comentarioAtual);
-     
-           var ev2 = new Event("input", { bubbles: true });
-           comment_text.dispatchEvent(ev2);
-           var submit_button = document.getElementsByClassName("y3zKF")[0];
-           submit_button.click();
-           await sleep(args.tempo_comentario * 1000);
-          }
-          if (!args.repetir_marcacao) {
-            args.marca_usuario = false;
-          }
-          await comentar(args)
-          }
-         }  
+        if (dados.antes_depois.includes('depois')) {
+          comment = dados.lista_usuario_marcar.map((usuario) => {
+            return dados.comentario+ ' ' + '@' + usuario.name.trim() 
+          });
         }
-        comentar(${JSON.stringify(data)})
+        return comment;
+      }
+    
+      return [dados.comentario];
+    }
+    
+    async function comentar(args) {
+    
+    
+        var horaAtual = new Date()
+        args.dataParada = new Date(args.dataParada)
+
+        if(horaAtual > args.dataParada){
+          args.dataParada = new Date(args.dataParada.setMinutes(args.dataParada.getMinutes() + 180));
+          args.podeComentar = false
+        }
+      var checkExist = setInterval(async function() {
+        if (document.getElementsByClassName("Ypffh")[0]) {
+           clearInterval(checkExist);
+        }
+     }, 100)
+     if(checkExist){
+       var comment_text = document.getElementsByClassName("Ypffh")[0];
+    
+       if(!args.podeComentar){
+        await sleep( 1800 * 1000);
+        args.podeComentar = true
+       }
+    
+       if(comment_text){
+         let comentarioCompleto = construirComentario(args);
+         for (var comentarioAtual of comentarioCompleto) {
+    
+         var comment_text = document.getElementsByClassName("Ypffh")[0];
+         comment_text.click();
+         comment_text.focus();
+         var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+           window.HTMLTextAreaElement.prototype,
+           "value"
+         ).set;
+         nativeInputValueSetter.call(comment_text, comentarioAtual);
+    
+         var ev2 = new Event("input", { bubbles: true });
+         comment_text.dispatchEvent(ev2);
+         var submit_button = document.getElementsByClassName("y3zKF")[0];
+         submit_button.click();
+         await sleep(args.tempo_comentario * 1000);
+        }
+        if (!args.repetir_marcacao) {
+          args.marca_usuario = false;
+        }
+        await comentar(args)
+        }
+       }
+      }
+      comentar(${JSON.stringify(data)})
        `
 
       if (linkSorteio.includes('?utm_medium=copy_link')) {
