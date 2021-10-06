@@ -51,16 +51,15 @@ export default function Inicio() {
   const [botScript, setBotScript] = useState("");
 
   useEffect(() => {
-    botService
-      .verificarBot()
-      .then((response) => {
-        setIsLoadingBot(response.statusBot);
-      })
-      .catch((err) => {
-        
-        // Alert.alert("Falha!", "Falha ao verificar status do bot");
-        Alert.alert("Falha!", "Falha ao verificar status do bot");
-      });
+    // botService
+    //   .verificarBot()
+    //   .then((response) => {
+    //     setIsLoadingBot(response.statusBot);
+    //   })
+    //   .catch((err) => {
+    //     // Alert.alert("Falha!", "Falha ao verificar status do bot");
+    //     Alert.alert("Falha!", "Falha ao verificar status do bot");
+    //   });
   }, []);
 
   const validateFields = () => {
@@ -165,25 +164,33 @@ export default function Inicio() {
     }
     
     async function comentar(args) {
-    
-    
+
         var horaAtual = new Date()
         args.dataParada = new Date(args.dataParada)
 
         if(horaAtual > args.dataParada){
+
           args.dataParada = new Date(args.dataParada.setMinutes(args.dataParada.getMinutes() + 180));
           args.podeComentar = false
         }
-      var checkExist = setInterval(async function() {
-        if (document.getElementsByClassName("Ypffh")[0]) {
-           clearInterval(checkExist);
-        }
-     }, 100)
-     if(checkExist){
-       var comment_text = document.getElementsByClassName("Ypffh")[0];
-    
-       if(!args.podeComentar){
-        await sleep( 1800 * 1000);
+        var checkExist = setInterval(async function() {
+          if (document.getElementsByClassName("Ypffh")[0]) {
+            clearInterval(checkExist);
+          }
+        }, 100)
+        if(checkExist){
+          var comment_text = document.getElementsByClassName("Ypffh")[0];
+          
+          if(!args.podeComentar){
+            var comment_text = document.getElementsByClassName("Ypffh")[0];
+            comment_text.click();
+            comment_text.focus();
+            var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+              window.HTMLTextAreaElement.prototype,
+              "value"
+            ).set;
+            nativeInputValueSetter.call(comment_text, 'Pausa automática de 30 min');
+            await sleep( 1800 * 1000);
         args.podeComentar = true
        }
     
